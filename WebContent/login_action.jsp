@@ -1,4 +1,5 @@
-<%@ page language="java" import="java.util.*,com.mongodb.*" pageEncoding="UTF-8"%>
+<%@ page language="java"
+	import="java.util.*,com.mongodb.*,shop.LoginBean" pageEncoding="UTF-8"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -6,28 +7,30 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-  <head>
-    <base href="<%=basePath%>">
-    
-    <title>My JSP 'login_action.jsp' starting page</title>
-    
-    <meta http-equiv="pragma" content="no-cache">
-    <meta http-equiv="cache-control" content="no-cache">
-    <meta http-equiv="expires" content="0">    
-    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
-    <meta http-equiv="description" content="This is my page">
-    <!--
+<head>
+<base href="<%=basePath%>">
+
+<title>My JSP 'login_action.jsp' starting page</title>
+
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="expires" content="0">
+<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+<meta http-equiv="description" content="This is my page">
+<!--
     <link rel="stylesheet" type="text/css" href="styles.css">
     -->
 
-  </head>
-  
-  <body>
-    <%
+</head>
+<jsp:useBean id="login" scope="session" class="shop.LoginBean" />
+<body>
+
+	<%
          response.setContentType("text/html;charset=utf-8");  
          request.setCharacterEncoding("utf-8");            
          String userName=(String)request.getParameter("username");  //get username
          String passWord=(String)request.getParameter("password");//get password
+        String vcode=(String)request.getParameter("vcode");
          String checkBox = request.getParameter("save_password");//get if user choose to remember password
          boolean login_test = false;               //boolean judge if login successfully
           try{   
@@ -36,22 +39,32 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
              @SuppressWarnings("deprecation")
             DB db = mongoClient.getDB( "library" );  //database library
             DBCollection coll = db.getCollection("userInfo");  //collection userInfo
-            System.out.println("Collection userInfo selected successfully");
+ 
             DBCursor cursor = coll.find();  //select and find information
             
             int i=1; 
             while (cursor.hasNext()) {     //search all
-                System.out.println("userInfo Document: "+i); 
+               
                 DBObject show = cursor.next();              
                 System.out.println(show); 
                 @SuppressWarnings("rawtypes")
                 Map show1 = show.toMap();  //trans map
                 String toname = (String)show1.get("username");  // get username value
                 String topassword = (String)show1.get("password"); //get password value
-                if(toname.equals(userName) && topassword.equals(passWord)){  
-                    System.out.println("login successfully！！！！！"+"username:"+toname+"  password:"+topassword);
+                String toemail = (String)show1.get("email");
+                String touid = (String)show1.get("uid");
+                if(toname.equals(userName) && topassword.equals(passWord)&&vcode.equals(login.getVcode())){  
                     login_test = true;
+                    login.add(userName);
+                    login.setPassword(passWord);
+                    login.setEmail(toemail);
+                    login.setUid(touid);
+                    login.setVcode("");
+                    
                 }
+              
+
+   
                   System.out.println(show1.get("username"));
                 i++;
             }
@@ -72,14 +85,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 pwdCookie.setMaxAge(60 * 60 * 24 * 3);
                 response.addCookie(nameCookie);
                 response.addCookie(pwdCookie);
+               
+                
              }
+           
             // request.getRequestDispatcher("welcome.jsp").forward(request, response);  
              response.sendRedirect("welcome.jsp");         
         }   
         else{
-             response.sendRedirect("login_Fail.jsp");      
+             response.sendRedirect("login.jsp?message=login_error");      
               // request.getRequestDispatcher("loginFail.jsp").forward(request, response);             
         }
      %>
-  </body>
-</html> 
+</body>
+</html>

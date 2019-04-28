@@ -7,7 +7,7 @@ String username = "";
 String password = "";
 //get all Cookie
  Cookie[] cookies = request.getCookies();
-
+if(cookies.length>0){
  for (int i = 0; i < cookies.length; i++) {
           //find username and password
          if ("username".equals(cookies[i].getName())) {
@@ -16,67 +16,90 @@ String password = "";
              password =  java.net.URLDecoder.decode(cookies[i].getValue(),"UTF-8");
          }
   }
+}
+
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-  <head>
-    <base href="<%=basePath%>">
-    
-    <title>login page</title>
-    
-    <meta http-equiv="pragma" content="no-cache">
-    <meta http-equiv="cache-control" content="no-cache">
-    <meta http-equiv="expires" content="0">    
-    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta http-equiv="description" content="This is my page">
-    
-    <link rel="stylesheet" type="text/css" href="css/login.css">
-    
+<head>
+<base href="<%=basePath%>">
 
-  </head>
-  
-  <body>
+<title>login page</title>
 
-    <div class="content">
-        <div class="head">
-            <h1>login</h1>
-        </div>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="expires" content="0">
+<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta http-equiv="description" content="This is my page">
 
-        <!--  panel   -->
-        <div class="panel">
-          <form action="login_action.jsp" method="post">  
-            
-            <!--  username and password    -->
-            <div class="group">
-                <label>username</label>
-                <input  type="text" placeholder="please enter the username" name="username" value="<%=username%>">
-            </div>
-            <div class="group">
-                <label>password</label>
-                <input type="password" placeholder="please enter the password" name="password" value="<%=password%>">
-            </div>
-            <div>
-             <input type="checkbox" value="save" name="save_password"> 
-             <label>remember password</label> 
-            </div>
-            <div class="group">
-            <label></label>
-            </div>
-            <!--  login button    -->
-            <div class="login">
-                <button type="submit" name="login">login</button>
-               <button type="reset" name="reset">reset</button>
-            </div>
-           </form>
-        </div>
-  
-        <!--  register button    -->
-        <div class="register">
-            <button onclick="window.location.href='register.jsp'">create a new account</button>
-        </div>
+<link rel="stylesheet" type="text/css" href="css/login.css">
+<%
+if("login_error".equals(request.getParameter("message"))){ %>
 
-    </div>
-  </body>
+<script type="text/javascript">
+    alert("There is something wrong with the information you entered, please reenter it！");
+</script>
+
+<%}else{%>
+
+<% }%>
+
+</head>
+
+<body>
+
+	<div class="content">
+		<div class="head">
+			<h1>login</h1>
+		</div>
+
+		<!--  panel   -->
+		<div class="panel">
+			<form action="login_action.jsp" method="post">
+
+				<!--  username and password    -->
+				<div class="group">
+					<label>Username</label> <input type="text"
+						placeholder="please enter the username" name="username"
+						value="<%=username%>">
+				</div>
+				<div class="group">
+					<label>Password</label> <input type="password"
+						placeholder="please enter the password" name="password"
+						value="<%=password%>">
+				</div>
+				<div class="group">
+					<label>VerifyCode</label> <input type="text"
+						placeholder="please enter the Verificationcode" name="vcode">
+					<div>
+						<img id="vCode" src="validatecode.jsp"
+							onclick="javascript:document.getElementById('vCode'). src='validatecode.jsp?'+Math.random();" />
+						Click figure to change it
+					</div>
+				</div>
+				<div>
+					<input type="checkbox" value="save" name="save_password"> <label>remember
+						password</label>
+				</div>
+				<div class="group">
+					<label></label>
+				</div>
+				<!--  login button    -->
+				<div class="login">
+					<button type="submit" name="login">login</button>
+					<button type="reset" name="reset">reset</button>
+				</div>
+			</form>
+		</div>
+
+		<!--  register button    -->
+		<div class="register">
+			<button onclick="window.location.href='register.jsp'">create
+				a new account</button>
+		</div>
+
+	</div>
+</body>
 </html>

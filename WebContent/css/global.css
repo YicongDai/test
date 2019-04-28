@@ -213,6 +213,7 @@ ul,li{
 	width:955px;
 	height:360px;
 }
+
 .loginfmbg{
 	background:url(../image/common/loginfmbg.png) 0 0 no-repeat;
 	width:313px;
@@ -221,6 +222,7 @@ ul,li{
 	left:540px;
 	top:0;
 }
+
 .sysname{
 	height:65px;
 	line-height:65px;
